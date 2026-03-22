@@ -1,0 +1,173 @@
+{% extends "main/base.html" %}
+{% block title %}Начало обучения — EnglishKids{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .onboarding-container {
+        max-width: 650px;
+        margin: 80px auto;
+        text-align: center;
+    }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    .onboarding-card {
+        background: white;
+        padding: 60px 50px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    .onboarding-card h1 {
+        font-size: 36px;
+        font-weight: 900;
+        margin-bottom: 12px;
+    }
+
+    .onboarding-card p {
+        font-size: 17px;
+        color: var(--text-light);
+        margin-bottom: 35px;
+        line-height: 1.6;
+    }
+
+    .goal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .goal-btn {
+        background: #f9fafb;
+        border: 2px solid #e5e7eb;
+        border-radius: 14px;
+        padding: 20px 16px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.25s;
+        text-align: left;
+    }
+
+    .goal-btn:hover, .goal-btn.selected {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, rgba(255,159,28,0.07), rgba(95,108,255,0.07));
+    }
+
+    .know-level-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .big-btn {
+        padding: 20px 30px;
+        border-radius: 999px;
+        font-size: 17px;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        transition: all 0.3s;
+    }
+
+    .big-btn-primary {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+    }
+
+    .big-btn-secondary {
+        background: white;
+        border: 2px solid #e5e7eb;
+        color: var(--text);
+    }
+
+    .big-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.12); }
+
+    .back-btn {
+        background: none;
+        border: none;
+        color: var(--text-light);
+        cursor: pointer;
+        font-size: 14px;
+        margin-top: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="onboarding-container">
+
+        <!-- STEP 1: Goal -->
+        <div class="step active" id="step1">
+            <div class="onboarding-card">
+                <div style="font-size:60px; margin-bottom:20px;">🎯</div>
+                <h1>Для чего вы изучаете английский?</h1>
+                <p>Мы подберём курс и темп обучения специально под вашу цель</p>
+
+                <form method="POST" id="goalForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="goal" id="goalInput">
+                    <input type="hidden" name="knows_level" id="knowsLevelInput" value="pending">
+
+                    <div class="goal-grid">
+                        <button type="button" class="goal-btn" onclick="pickGoal('travel', this)">✈️ Путешествия</button>
+                        <button type="button" class="goal-btn" onclick="pickGoal('work', this)">💼 Работа / карьера</button>
+                        <button type="button" class="goal-btn" onclick="pickGoal('study', this)">📚 Учёба</button>
+                        <button type="button" class="goal-btn" onclick="pickGoal('hobby', this)">🌟 Саморазвитие</button>
+                        <button type="button" class="goal-btn" onclick="pickGoal('exam', this)">🎓 Экзамен</button>
+                        <button type="button" class="goal-btn" onclick="pickGoal('other', this)">🤷 Другое</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- STEP 2: Know level? -->
+        <div class="step" id="step2">
+            <div class="onboarding-card">
+                <div style="font-size:60px; margin-bottom:20px;">📊</div>
+                <h1>Знаете ли вы свой уровень?</h1>
+                <p>Если знаете — выберите вручную. Если нет — пройдите короткий тест из 20 вопросов.</p>
+
+                <div class="know-level-buttons">
+                    <button class="big-btn big-btn-primary" onclick="chooseLevel('yes')">
+                        ✅ &nbsp; Да, знаю свой уровень
+                    </button>
+                    <button class="big-btn big-btn-secondary" onclick="chooseLevel('no')">
+                        🧩 &nbsp; Нет — пройти тест
+                    </button>
+                </div>
+
+                <button class="back-btn" onclick="showStep(1)">← Назад</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    let selectedGoal = '';
+
+    function showStep(n) {
+        document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+        document.getElementById(`step${n}`).classList.add('active');
+    }
+
+    function pickGoal(goal, el) {
+        document.querySelectorAll('.goal-btn').forEach(b => b.classList.remove('selected'));
+        el.classList.add('selected');
+        selectedGoal = goal;
+        setTimeout(() => showStep(2), 300);
+    }
+
+    function chooseLevel(knows) {
+        if (!selectedGoal) { showStep(1); return; }
+        const form = document.getElementById('goalForm');
+        document.getElementById('goalInput').value = selectedGoal;
+        document.getElementById('knowsLevelInput').value = knows;
+        form.submit();
+    }
+</script>
+{% endblock %}

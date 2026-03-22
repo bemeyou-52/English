@@ -1,0 +1,542 @@
+
+{% extends "main/base.html" %}
+{% block title %}Тест на уровень — EnglishKids{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .test-container {
+        max-width: 750px;
+        margin: 60px auto;
+    }
+
+    .test-header {
+        text-align: center;
+        background: white;
+        padding: 50px 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 32px;
+    }
+
+    .test-header h1 {
+        font-size: 38px;
+        font-weight: 900;
+        margin-bottom: 12px;
+    }
+
+    .test-header p {
+        font-size: 17px;
+        color: var(--text-light);
+    }
+
+    .progress-section {
+        background: white;
+        padding: 24px 32px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 28px;
+    }
+
+    .progress-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 12px;
+        font-size: 14px;
+        color: var(--text-light);
+    }
+
+    .progress-meta strong { color: var(--text); font-size: 15px; }
+
+    .progress-bar {
+        height: 10px;
+        background: #e5e7eb;
+        border-radius: 999px;
+        overflow: hidden;
+    }
+
+    .progress-fill {
+        height: 100%;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        transition: width 0.5s ease;
+        border-radius: 999px;
+    }
+
+    .levels-row {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+    }
+
+    .level-badge {
+        padding: 6px 14px;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 700;
+        background: #f3f4f6;
+        color: #9ca3af;
+        transition: all 0.3s;
+    }
+
+    .level-badge.active {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        transform: scale(1.1);
+    }
+
+    .level-badge.done {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .question-card {
+        background: white;
+        padding: 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(12px); }
+        to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .question-label {
+        color: var(--primary);
+        font-weight: 700;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 14px;
+    }
+
+    .question-text {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 30px;
+        line-height: 1.4;
+    }
+
+    .answers-list { list-style: none; margin: 0; padding: 0; }
+
+    .answer-option {
+        background: #f9fafb;
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        cursor: pointer;
+        transition: all 0.25s;
+        border: 2px solid transparent;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        user-select: none;
+    }
+
+    .answer-option:hover:not(.disabled) {
+        background: #f3f4f6;
+        border-color: var(--primary);
+    }
+
+    .answer-option.selected {
+        background: linear-gradient(135deg, rgba(255, 159, 28, 0.08), rgba(95, 108, 255, 0.08));
+        border-color: var(--primary);
+    }
+
+    .answer-option.correct { background: #d1fae5; border-color: #10b981; }
+    .answer-option.wrong   { background: #fee2e2; border-color: #ef4444; }
+    .answer-option.disabled { cursor: default; pointer-events: none; }
+
+    .answer-letter {
+        width: 36px; height: 36px;
+        background: white;
+        border: 2px solid #e5e7eb;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-weight: 700; font-size: 14px;
+        color: var(--text-light);
+        flex-shrink: 0;
+        transition: all 0.25s;
+    }
+
+    .answer-option.selected .answer-letter { background: var(--primary); color: white; border-color: var(--primary); }
+    .answer-option.correct .answer-letter  { background: #10b981; color: white; border-color: #10b981; }
+    .answer-option.wrong .answer-letter    { background: #ef4444; color: white; border-color: #ef4444; }
+
+    .answer-text { font-size: 16px; }
+
+    .feedback-banner {
+        margin-top: 20px;
+        padding: 14px 20px;
+        border-radius: 12px;
+        font-weight: 600;
+        display: none;
+        animation: fadeIn 0.2s ease;
+    }
+
+    .feedback-banner.correct-fb { background: #d1fae5; color: #065f46; }
+    .feedback-banner.wrong-fb   { background: #fee2e2; color: #991b1b; }
+
+    .transition-banner {
+        margin-top: 14px;
+        padding: 14px 20px;
+        border-radius: 12px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 15px;
+        display: none;
+        animation: fadeIn 0.3s ease;
+    }
+
+    .tb-advance { background: #ede9fe; color: #5b21b6; }
+    .tb-demote  { background: #fef3c7; color: #92400e; }
+    .tb-retry   { background: #e0f2fe; color: #0c4a6e; }
+    .tb-finish  { background: #d1fae5; color: #065f46; }
+
+    .btn-next {
+        margin-top: 28px;
+        width: 100%;
+        padding: 16px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        font-size: 16px;
+        font-weight: 700;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: none;
+    }
+
+    .btn-next:hover { transform: translateY(-2px); box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
+
+    .result-screen {
+        background: white;
+        padding: 60px 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        display: none;
+        animation: fadeIn 0.4s ease;
+    }
+
+    .result-level {
+        font-size: 72px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 16px 0;
+    }
+
+    .result-screen h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; }
+    .result-screen p  { color: var(--text-light); font-size: 17px; margin-bottom: 32px; }
+
+    .no-questions {
+        background: white;
+        padding: 80px 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+    }
+
+    .loader {
+        text-align: center;
+        padding: 60px;
+        font-size: 48px;
+        animation: pulse 1s infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.3; }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="test-container">
+
+        {% if no_questions %}
+        <div class="no-questions">
+            <div style="font-size:80px; margin-bottom:20px;">🚧</div>
+            <h2>Вопросы в разработке</h2>
+            <p style="color:var(--text-light); margin-bottom:30px;">
+                Добавьте вопросы в панели администратора, чтобы тест стал доступен.
+            </p>
+            <a href="/level-select/" class="btn btn-primary" style="display:inline-block; padding:14px 36px; border-radius:999px; background:linear-gradient(135deg,var(--primary),var(--secondary)); color:white; font-weight:700; text-decoration:none;">
+                Выбрать уровень вручную
+            </a>
+        </div>
+
+        {% else %}
+
+        <div class="test-header">
+            <h1>🎯 Тест на определение уровня</h1>
+            <p>Адаптивный тест — вопросы подстраиваются под ваш уровень.<br>До {{ max_questions }} вопросов · около 10 минут</p>
+        </div>
+
+        <div class="progress-section" id="progressSection">
+            <div class="progress-meta">
+                <span id="progressLabel">Вопрос 1 из {{ max_questions }}</span>
+                <strong id="currentLevelLabel">Уровень: A1</strong>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressBar" style="width:0%"></div>
+            </div>
+            <div class="levels-row" id="levelsRow">
+                {% for lvl in levels %}
+                <div class="level-badge {% if forloop.first %}active{% endif %}" id="badge_{{ lvl }}">{{ lvl }}</div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="loader" id="loaderSection">⏳</div>
+
+        <div class="question-card" id="questionCard" style="display:none;">
+            <div class="question-label" id="questionLabel"></div>
+            <div class="question-text" id="questionText"></div>
+
+            <ul class="answers-list">
+                <li class="answer-option" id="opt_a" onclick="selectAnswer('a')">
+                    <div class="answer-letter">A</div>
+                    <div class="answer-text" id="text_a"></div>
+                </li>
+                <li class="answer-option" id="opt_b" onclick="selectAnswer('b')">
+                    <div class="answer-letter">B</div>
+                    <div class="answer-text" id="text_b"></div>
+                </li>
+                <li class="answer-option" id="opt_c" onclick="selectAnswer('c')">
+                    <div class="answer-letter">C</div>
+                    <div class="answer-text" id="text_c"></div>
+                </li>
+                <li class="answer-option" id="opt_d" onclick="selectAnswer('d')">
+                    <div class="answer-letter">D</div>
+                    <div class="answer-text" id="text_d"></div>
+                </li>
+            </ul>
+
+            <div class="feedback-banner" id="feedbackBanner"></div>
+            <div class="transition-banner" id="transitionBanner"></div>
+
+            <button class="btn-next" id="btnNext">Следующий вопрос →</button>
+        </div>
+
+        <div class="result-screen" id="resultScreen">
+            <div style="font-size:70px;">🏆</div>
+            <h2>Тест завершён!</h2>
+            <div class="result-level" id="resultLevel">B1</div>
+            <p id="resultDescription"></p>
+            <a href="/learning/" style="display:inline-block; padding:16px 48px; border-radius:999px; background:linear-gradient(135deg,var(--primary),var(--secondary)); color:white; font-weight:700; font-size:16px; text-decoration:none;">
+                Начать обучение 🚀
+            </a>
+        </div>
+
+        {% endif %}
+    </div>
+</div>
+
+<script>
+const CSRF = '{{ csrf_token }}';
+const MAX_Q = {{ max_questions }};
+const LEVELS = {{ levels|safe }};
+const LEVEL_NAMES = {
+    'A1': 'Начальный', 'A2': 'Элементарный',
+    'B1': 'Средний', 'B2': 'Выше среднего',
+    'C1': 'Продвинутый', 'C2': 'Профессиональный'
+};
+
+let currentQuestionId = null;
+let selectedAnswer = null;
+let answerSubmitted = false;
+let currentLevel = 'A1';
+
+async function loadNextQuestion() {
+    document.getElementById('loaderSection').style.display = 'block';
+    document.getElementById('questionCard').style.display = 'none';
+    document.getElementById('btnNext').style.display = 'none';
+
+    try {
+        const res = await fetch('/test/next-question/', {
+            headers: { 'X-CSRFToken': CSRF }
+        });
+        const data = await res.json();
+
+        document.getElementById('loaderSection').style.display = 'none';
+
+        if (data.done || data.error) {
+            showResult(data.final_level || currentLevel);
+            return;
+        }
+
+        // Progress
+        const pct = ((data.total_asked - 1) / data.max_questions) * 100;
+        document.getElementById('progressBar').style.width = pct + '%';
+        document.getElementById('progressLabel').textContent =
+            `Вопрос ${data.total_asked} из ${data.max_questions}`;
+        document.getElementById('currentLevelLabel').textContent =
+            `Уровень: ${data.current_level}`;
+
+        if (data.current_level !== currentLevel) {
+            updateLevelBadges(currentLevel, data.current_level);
+            currentLevel = data.current_level;
+        }
+
+        // Populate question
+        const q = data.question;
+        currentQuestionId = q.id;
+        selectedAnswer = null;
+        answerSubmitted = false;
+
+        document.getElementById('questionLabel').textContent =
+            `Вопрос ${data.total_asked} из ${data.max_questions}`;
+        document.getElementById('questionText').textContent = q.text;
+        document.getElementById('text_a').textContent = q.option_a;
+        document.getElementById('text_b').textContent = q.option_b;
+        document.getElementById('text_c').textContent = q.option_c;
+        document.getElementById('text_d').textContent = q.option_d;
+
+        ['a','b','c','d'].forEach(l => {
+            const el = document.getElementById('opt_' + l);
+            el.className = 'answer-option';
+            el.onclick = () => selectAnswer(l);
+        });
+
+        document.getElementById('feedbackBanner').style.display = 'none';
+        document.getElementById('transitionBanner').style.display = 'none';
+        document.getElementById('btnNext').style.display = 'none';
+
+        document.getElementById('questionCard').style.display = 'block';
+
+    } catch(e) {
+        document.getElementById('loaderSection').innerHTML = '⚠️ Ошибка загрузки. Обновите страницу.';
+    }
+}
+
+function updateLevelBadges(oldLevel, newLevel) {
+    const oldBadge = document.getElementById('badge_' + oldLevel);
+    if (oldBadge) oldBadge.className = 'level-badge done';
+    const newBadge = document.getElementById('badge_' + newLevel);
+    if (newBadge) newBadge.className = 'level-badge active';
+}
+
+function selectAnswer(letter) {
+    if (answerSubmitted) return;
+    selectedAnswer = letter;
+    ['a','b','c','d'].forEach(l => {
+        document.getElementById('opt_' + l).classList.remove('selected');
+    });
+    document.getElementById('opt_' + letter).classList.add('selected');
+    submitAnswer();
+}
+
+async function submitAnswer() {
+    if (!selectedAnswer || answerSubmitted) return;
+    answerSubmitted = true;
+
+    ['a','b','c','d'].forEach(l => {
+        const el = document.getElementById('opt_' + l);
+        el.classList.add('disabled');
+        el.onclick = null;
+    });
+
+    try {
+        const res = await fetch('/test/answer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': CSRF
+            },
+            body: JSON.stringify({
+                question_id: currentQuestionId,
+                answer: selectedAnswer
+            })
+        });
+        const data = await res.json();
+
+        // Show correct/wrong
+        const correct = data.correct_answer;
+        document.getElementById('opt_' + correct).classList.add('correct');
+        if (!data.is_correct) {
+            document.getElementById('opt_' + selectedAnswer).classList.add('wrong');
+        }
+
+        // Feedback
+        const fb = document.getElementById('feedbackBanner');
+
+        if (data.is_correct) {
+            fb.className = 'feedback-banner correct-fb';
+            fb.innerHTML = `
+                ✅ Правильно!
+                ${data.explanation ? `<div class="explanation">${data.explanation}</div>` : ''}
+             `;
+        } else {
+            fb.className = 'feedback-banner wrong-fb';
+            fb.innerHTML = `
+                ❌ Неправильно. Правильный ответ: ${correct.toUpperCase()}
+                ${data.explanation ? `<div class="explanation">${data.explanation}</div>` : ''}
+            `;
+        }
+
+        fb.style.display = 'block';
+
+        // Transition banner after block
+        if (data.block_done && data.transition) {
+            const tb = document.getElementById('transitionBanner');
+            const msgs = {
+                'advance': `⬆️ Отлично! Переходим на уровень ${data.next_level}`,
+                'retry':   `🔄 Ещё 4 вопроса на этом же уровне — вы справитесь!`,
+                'demote':  `⬇️ Переходим к вопросам уровня ${data.next_level}`,
+                'finish':  `🏁 Максимальный уровень достигнут!`,
+            };
+            tb.textContent = msgs[data.transition] || '';
+            const cls = {advance:'tb-advance', retry:'tb-retry', demote:'tb-demote', finish:'tb-finish'};
+            tb.className = 'transition-banner ' + (cls[data.transition] || '');
+            tb.style.display = 'block';
+        }
+
+        const btn = document.getElementById('btnNext');
+        if (data.done) {
+            btn.textContent = 'Посмотреть результат 🎯';
+            btn.onclick = () => showResult(data.final_level);
+        } else {
+            btn.textContent = 'Следующий вопрос →';
+            btn.onclick = loadNextQuestion;
+        }
+        btn.style.display = 'block';
+
+    } catch(e) {
+        console.error(e);
+    }
+}
+
+function showResult(level) {
+    document.getElementById('progressSection').style.display = 'none';
+    document.getElementById('questionCard').style.display = 'none';
+    document.getElementById('loaderSection').style.display = 'none';
+
+    document.getElementById('resultLevel').textContent = level;
+    const name = LEVEL_NAMES[level] || '';
+    document.getElementById('resultDescription').textContent =
+        `Ваш уровень английского: ${level} — ${name}. Мы подберём для вас подходящие уроки!`;
+
+    LEVELS.forEach(l => {
+        const b = document.getElementById('badge_' + l);
+        if (!b) return;
+        if (l === level) b.className = 'level-badge active';
+        else if (LEVELS.indexOf(l) < LEVELS.indexOf(level)) b.className = 'level-badge done';
+        else b.className = 'level-badge';
+    });
+
+    document.getElementById('resultScreen').style.display = 'block';
+}
+
+// Auto-start
+loadNextQuestion();
+</script>
+{% endblock %}

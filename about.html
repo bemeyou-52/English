@@ -1,0 +1,852 @@
+
+{% extends "main/base.html" %}
+{% block title %}О нас — EnglishKids | Наша миссия и команда{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* ===== HERO SECTION ===== */
+    .about-hero {
+        text-align: center;
+        padding: 80px 20px 60px;
+        background: linear-gradient(135deg, rgba(95, 108, 255, 0.08), rgba(255, 159, 28, 0.08));
+        border-radius: 30px;
+        margin-bottom: 60px;
+    }
+
+    .about-hero h1 {
+        font-size: 52px;
+        margin-bottom: 20px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .about-hero p {
+        font-size: 20px;
+        color: var(--text-light);
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.8;
+    }
+
+    /* ===== MISSION SECTION ===== */
+    .mission-section {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 60px;
+        align-items: center;
+        margin-bottom: 80px;
+    }
+
+    .mission-content h2 {
+        margin-bottom: 25px;
+    }
+
+    .mission-content p {
+        font-size: 17px;
+        line-height: 1.8;
+        color: var(--text-light);
+        margin-bottom: 20px;
+    }
+
+    .mission-image {
+        width: 100%;
+        height: 400px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 150px;
+        box-shadow: var(--shadow);
+    }
+
+    /* ===== VALUES SECTION ===== */
+    .values-section {
+        background: var(--card-bg);
+        padding: 70px 50px;
+        border-radius: 30px;
+        box-shadow: var(--shadow);
+        margin-bottom: 80px;
+    }
+
+    .values-section h2 {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .values-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 40px;
+    }
+
+    .value-card {
+        text-align: center;
+        padding: 30px;
+        background: white;
+        border-radius: var(--radius);
+        transition: transform 0.3s;
+        border: 2px solid transparent;
+    }
+
+    .value-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+    }
+
+    .value-icon {
+        font-size: 64px;
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .value-card h3 {
+        margin-bottom: 15px;
+        font-size: 22px;
+    }
+
+    .value-card p {
+        color: var(--text-light);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    /* ===== STORY SECTION ===== */
+    .story-section {
+        background: linear-gradient(135deg, rgba(95, 108, 255, 0.05), rgba(255, 159, 28, 0.05));
+        padding: 70px 50px;
+        border-radius: 30px;
+        margin-bottom: 80px;
+    }
+
+    .story-section h2 {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .timeline {
+        max-width: 900px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .timeline:before {
+        content: '';
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, var(--primary), var(--secondary));
+        border-radius: 2px;
+    }
+
+    .timeline-item {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        margin-bottom: 50px;
+        position: relative;
+    }
+
+    .timeline-item:nth-child(even) .timeline-content {
+        grid-column: 2;
+    }
+
+    .timeline-item:nth-child(even) .timeline-year {
+        grid-column: 1;
+        grid-row: 1;
+        text-align: right;
+    }
+
+    .timeline-year {
+        font-size: 42px;
+        font-weight: 800;
+        color: var(--primary);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+
+    .timeline-item:nth-child(even) .timeline-year {
+        justify-content: flex-start;
+    }
+
+    .timeline-content {
+        background: white;
+        padding: 30px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    .timeline-content h3 {
+        margin-bottom: 15px;
+        font-size: 22px;
+    }
+
+    .timeline-content p {
+        color: var(--text-light);
+        line-height: 1.7;
+        font-size: 15px;
+    }
+
+    .timeline-dot {
+        position: absolute;
+        left: 50%;
+        top: 30px;
+        transform: translateX(-50%);
+        width: 20px;
+        height: 20px;
+        background: white;
+        border: 4px solid var(--primary);
+        border-radius: 50%;
+        z-index: 2;
+    }
+
+    /* ===== TEAM SECTION ===== */
+    .team-section {
+        margin-bottom: 80px;
+    }
+
+    .team-section h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .team-subtitle {
+        text-align: center;
+        color: var(--text-light);
+        font-size: 18px;
+        margin-bottom: 50px;
+    }
+
+    .team-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 35px;
+    }
+
+    .team-card {
+        background: var(--card-bg);
+        border-radius: var(--radius);
+        overflow: hidden;
+        box-shadow: var(--shadow);
+        transition: transform 0.3s;
+        text-align: center;
+    }
+
+    .team-card:hover {
+        transform: translateY(-8px);
+    }
+
+    .team-avatar {
+        width: 100%;
+        height: 280px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 120px;
+    }
+
+    .team-info {
+        padding: 25px;
+    }
+
+    .team-info h3 {
+        margin-bottom: 8px;
+        font-size: 22px;
+    }
+
+    .team-role {
+        color: var(--primary);
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 15px;
+    }
+
+    .team-bio {
+        color: var(--text-light);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    /* ===== METHODOLOGY SECTION ===== */
+    .methodology-section {
+        background: white;
+        padding: 70px 50px;
+        border-radius: 30px;
+        box-shadow: var(--shadow);
+        margin-bottom: 80px;
+    }
+
+    .methodology-section h2 {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .methodology-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 40px;
+    }
+
+    .methodology-item {
+        border-left: 4px solid var(--primary);
+        padding-left: 25px;
+    }
+
+    .methodology-item h3 {
+        margin-bottom: 15px;
+        font-size: 22px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .methodology-item h3 span {
+        font-size: 32px;
+    }
+
+    .methodology-item p {
+        color: var(--text-light);
+        line-height: 1.7;
+        font-size: 15px;
+    }
+
+    .methodology-item ul {
+        margin-top: 15px;
+        padding-left: 20px;
+    }
+
+    .methodology-item ul li {
+        color: var(--text-light);
+        margin-bottom: 8px;
+        line-height: 1.6;
+    }
+
+    /* ===== STATS SECTION ===== */
+    .stats-section {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        padding: 70px 50px;
+        border-radius: 30px;
+        color: white;
+        text-align: center;
+        margin-bottom: 80px;
+    }
+
+    .stats-section h2 {
+        color: white;
+        margin-bottom: 50px;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+    }
+
+    .stat-box {
+        padding: 20px;
+    }
+
+    .stat-box .number {
+        font-size: 56px;
+        font-weight: 900;
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    .stat-box .label {
+        font-size: 16px;
+        opacity: 0.95;
+    }
+
+    /* ===== PARTNERS SECTION ===== */
+    .partners-section {
+        text-align: center;
+        margin-bottom: 80px;
+    }
+
+    .partners-section h2 {
+        margin-bottom: 50px;
+    }
+
+    .partners-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 30px;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .partner-logo {
+        background: white;
+        padding: 30px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        height: 120px;
+        transition: transform 0.3s;
+    }
+
+    .partner-logo:hover {
+        transform: scale(1.05);
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-about {
+        background: linear-gradient(135deg, rgba(95, 108, 255, 0.08), rgba(255, 159, 28, 0.08));
+        padding: 70px 50px;
+        border-radius: 30px;
+        text-align: center;
+    }
+
+    .cta-about h2 {
+        margin-bottom: 20px;
+    }
+
+    .cta-about p {
+        font-size: 18px;
+        color: var(--text-light);
+        margin-bottom: 35px;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    @media (max-width: 768px) {
+        .about-hero h1 {
+            font-size: 36px;
+        }
+
+        .mission-section {
+            grid-template-columns: 1fr;
+        }
+
+        .mission-image {
+            height: 300px;
+        }
+
+        .timeline:before {
+            left: 20px;
+        }
+
+        .timeline-item {
+            grid-template-columns: 1fr;
+            padding-left: 50px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            grid-column: 1;
+        }
+
+        .timeline-item:nth-child(even) .timeline-year {
+            grid-column: 1;
+            text-align: left;
+        }
+
+        .timeline-year {
+            justify-content: flex-start;
+            font-size: 32px;
+        }
+
+        .timeline-dot {
+            left: 20px;
+        }
+
+        .methodology-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="about-hero container">
+    <h1>О нас</h1>
+    <p>
+        EnglishKids — это современная образовательная платформа, которая делает изучение английского языка увлекательным приключением для детей. 
+        Мы верим, что обучение должно быть интересным, персонализированным и эффективным.
+    </p>
+</section>
+
+<!-- MISSION SECTION -->
+<section class="container">
+    <div class="mission-section">
+        <div class="mission-content">
+            <h2>Наша миссия</h2>
+            <p>
+                Мы создали EnglishKids, чтобы изменить подход к изучению английского языка. Традиционные методы часто скучны и неэффективны для детей. Наша цель — сделать процесс обучения настолько захватывающим, что дети сами будут просить позаниматься.
+            </p>
+            <p>
+                Мы верим, что каждый ребенок уникален, и подход к обучению должен учитывать его интересы, темп развития и предпочтения. Именно поэтому мы создали платформу, которая адаптируется под каждого ученика.
+            </p>
+            <p>
+                Наша миссия — помочь миллионам детей по всему миру овладеть английским языком через интересные темы, игровой формат и современные технологии, открывая им новые возможности для будущего.
+            </p>
+        </div>
+        <div class="mission-image">
+            🌍
+        </div>
+    </div>
+</section>
+
+<!-- VALUES SECTION -->
+<section class="container">
+    <div class="values-section">
+        <h2>Наши ценности</h2>
+        <div class="values-grid">
+            <div class="value-card">
+                <span class="value-icon">🎯</span>
+                <h3>Персонализация</h3>
+                <p>
+                    Мы создаем уникальный опыт обучения для каждого ребенка, основанный на его интересах и уровне знаний.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">💡</span>
+                <h3>Инновации</h3>
+                <p>
+                    Используем современные технологии и научные исследования для создания наиболее эффективных методик обучения.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">❤️</span>
+                <h3>Забота</h3>
+                <p>
+                    Создаем безопасную и поддерживающую среду, где каждый ребенок чувствует себя уверенно и комфортно.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">🎮</span>
+                <h3>Игровой подход</h3>
+                <p>
+                    Превращаем обучение в увлекательную игру с наградами, достижениями и интересными челленджами.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">📊</span>
+                <h3>Результативность</h3>
+                <p>
+                    Фокусируемся на реальных результатах и измеримом прогрессе в освоении языка.
+                </p>
+            </div>
+            
+            <div class="value-card">
+                <span class="value-icon">🤝</span>
+                <h3>Партнерство</h3>
+                <p>
+                    Работаем вместе с родителями, обеспечивая прозрачность и вовлеченность в процесс обучения.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STORY SECTION -->
+<section class="container">
+    <div class="story-section">
+        <h2>Наша история</h2>
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-year">2020</div>
+                <div class="timeline-content">
+                    <h3>Рождение идеи</h3>
+                    <p>
+                        Группа педагогов и IT-специалистов объединилась с целью создать платформу, которая изменит подход к изучению английского для детей. Началась работа над концепцией и первыми прототипами.
+                    </p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">2021</div>
+                <div class="timeline-content">
+                    <h3>Запуск бета-версии</h3>
+                    <p>
+                        После года разработки мы запустили бета-версию платформы с 5 курсами. Первые 200 учеников помогли нам улучшить платформу своими отзывами и предложениями.
+                    </p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">2022</div>
+                <div class="timeline-content">
+                    <h3>Рост и признание</h3>
+                    <p>
+                        EnglishKids достиг отметки в 1000 активных учеников. Мы расширили библиотеку курсов до 12 направлений и получили первую образовательную премию.
+                    </p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">2023</div>
+                <div class="timeline-content">
+                    <h3>Технологический прорыв</h3>
+                    <p>
+                        Внедрение AI-технологий для персонализации обучения и системы адаптивных заданий. Запуск мобильного приложения для iOS и Android.
+                    </p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">2024</div>
+                <div class="timeline-content">
+                    <h3>Международная экспансия</h3>
+                    <p>
+                        Платформа стала доступна в 15 странах. Запуск программы для школ и образовательных центров. Более 5000 активных учеников.
+                    </p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-year">2026</div>
+                <div class="timeline-content">
+                    <h3>Новые горизонты</h3>
+                    <p>
+                        Запуск интерактивных VR-уроков и живых разговорных клубов. Партнерство с ведущими издательствами и образовательными учреждениями.
+                    </p>
+                </div>
+                <div class="timeline-dot"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- METHODOLOGY SECTION -->
+<section class="container">
+    <div class="methodology-section">
+        <h2>Наша методология</h2>
+        <div class="methodology-grid">
+            <div class="methodology-item">
+                <h3><span>🧠</span> Обучение через интересы</h3>
+                <p>
+                    Мы предлагаем курсы по разным темам — от науки до спорта. Ребенок выбирает то, что ему интересно, и изучает язык в контексте любимых тем.
+                </p>
+                <ul>
+                    <li>Более 15 тематических направлений</li>
+                    <li>Регулярное обновление контента</li>
+                    <li>Актуальные материалы</li>
+                </ul>
+            </div>
+            
+            <div class="methodology-item">
+                <h3><span>🎯</span> Адаптивное обучение</h3>
+                <p>
+                    Система автоматически подстраивается под уровень и темп каждого ученика, предлагая задания оптимальной сложности.
+                </p>
+                <ul>
+                    <li>AI-алгоритмы персонализации</li>
+                    <li>Индивидуальная траектория обучения</li>
+                    <li>Автоматическая корректировка сложности</li>
+                </ul>
+            </div>
+            
+            <div class="methodology-item">
+                <h3><span>🎮</span> Геймификация</h3>
+                <p>
+                    Система наград, достижений и рейтингов превращает обучение в увлекательную игру, мотивируя заниматься каждый день.
+                </p>
+                <ul>
+                    <li>Система опыта и уровней</li>
+                    <li>Коллекционные бейджи</li>
+                    <li>Еженедельные челленджи</li>
+                </ul>
+            </div>
+            
+            <div class="methodology-item">
+                <h3><span>📖</span> Комплексный подход</h3>
+                <p>
+                    Развиваем все языковые навыки: чтение, письмо, аудирование и говорение — через разнообразные упражнения.
+                </p>
+                <ul>
+                    <li>Чтение аутентичных текстов</li>
+                    <li>Практика письменной речи</li>
+                    <li>Аудирование от носителей</li>
+                    <li>Разговорная практика</li>
+                </ul>
+            </div>
+            
+            <div class="methodology-item">
+                <h3><span>🔄</span> Интервальное повторение</h3>
+                <p>
+                    Используем научно доказанную методику повторения материала через оптимальные интервалы для долгосрочного запоминания.
+                </p>
+                <ul>
+                    <li>Умные флеш-карты</li>
+                    <li>Система повторений SRS</li>
+                    <li>Регулярные повторы пройденного</li>
+                </ul>
+            </div>
+            
+            <div class="methodology-item">
+                <h3><span>👥</span> Социальное обучение</h3>
+                <p>
+                    Создаем возможности для взаимодействия с другими учениками через групповые активности и соревнования.
+                </p>
+                <ul>
+                    <li>Командные задания</li>
+                    <li>Дружеские соревнования</li>
+                    <li>Общие проекты</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM SECTION -->
+<section class="container team-section">
+    <h2>Наша команда</h2>
+    <p class="team-subtitle">
+        Профессионалы, которые создают будущее образования
+    </p>
+    
+    <div class="team-grid">
+        <div class="team-card">
+            <div class="team-avatar">👨‍💼</div>
+            <div class="team-info">
+                <h3>Александр Новиков</h3>
+                <div class="team-role">Основатель и CEO</div>
+                <p class="team-bio">
+                    15 лет опыта в EdTech. Бывший директор по продукту в ведущей образовательной компании. Магистр лингвистики МГУ.
+                </p>
+            </div>
+        </div>
+        
+        <div class="team-card">
+            <div class="team-avatar">👩‍🏫</div>
+            <div class="team-info">
+                <h3>Мария Смирнова</h3>
+                <div class="team-role">Главный методист</div>
+                <p class="team-bio">
+                    Кандидат педагогических наук, автор 20+ образовательных программ. Опыт преподавания английского — 12 лет.
+                </p>
+            </div>
+        </div>
+        
+        <div class="team-card">
+            <div class="team-avatar">👨‍💻</div>
+            <div class="team-info">
+                <h3>Дмитрий Волков</h3>
+                <div class="team-role">CTO</div>
+                <p class="team-bio">
+                    Эксперт в AI и машинном обучении. Ранее работал в Google и Яндекс. Создал алгоритмы персонализации EnglishKids.
+                </p>
+            </div>
+        </div>
+        
+        <div class="team-card">
+            <div class="team-avatar">👩‍🎨</div>
+            <div class="team-info">
+                <h3>Анна Кузнецова</h3>
+                <div class="team-role">Директор по дизайну</div>
+                <p class="team-bio">
+                    Специалист по UX/UI для детских продуктов. Создала интерфейсы для 50+ образовательных приложений.
+                </p>
+            </div>
+        </div>
+        
+        <div class="team-card">
+            <div class="team-avatar">👨‍🔬</div>
+            <div class="team-info">
+                <h3>Игорь Петров</h3>
+                <div class="team-role">Руководитель контента</div>
+                <p class="team-bio">
+                    Бывший редактор National Geographic Russia. Создает увлекательный образовательный контент для детей.
+                </p>
+            </div>
+        </div>
+        
+        <div class="team-card">
+            <div class="team-avatar">👩‍💼</div>
+            <div class="team-info">
+                <h3>Елена Соколова</h3>
+                <div class="team-role">Директор по развитию</div>
+                <p class="team-bio">
+                    MBA, опыт в стратегическом развитии образовательных проектов. Руководит партнерскими программами.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS SECTION -->
+<section class="container">
+    <div class="stats-section">
+        <h2>EnglishKids в цифрах</h2>
+        <div class="stats-grid">
+            <div class="stat-box">
+                <span class="number">5000+</span>
+                <span class="label">Активных учеников</span>
+            </div>
+            <div class="stat-box">
+                <span class="number">15+</span>
+                <span class="label">Тематических курсов</span>
+            </div>
+            <div class="stat-box">
+                <span class="number">50000+</span>
+                <span class="label">Пройденных уроков</span>
+            </div>
+            <div class="stat-box">
+                <span class="number">95%</span>
+                <span class="label">Довольных родителей</span>
+            </div>
+            <div class="stat-box">
+                <span class="number">15</span>
+                <span class="label">Стран присутствия</span>
+            </div>
+            <div class="stat-box">
+                <span class="number">85%</span>
+                <span class="label">Улучшают оценки</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PARTNERS SECTION -->
+<section class="container partners-section">
+    <h2>Наши партнеры</h2>
+    <div class="partners-grid">
+        <div class="partner-logo">🏫</div>
+        <div class="partner-logo">📚</div>
+        <div class="partner-logo">🎓</div>
+        <div class="partner-logo">🏛️</div>
+        <div class="partner-logo">📖</div>
+        <div class="partner-logo">🌐</div>
+    </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="container">
+    <div class="cta-about">
+        <h2>Присоединяйтесь к EnglishKids</h2>
+        <p>
+            Станьте частью сообщества тысяч детей и родителей, которые уже изменили свой подход к изучению английского. 
+            Начните бесплатный пробный период уже сегодня!
+        </p>
+        <div style="display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn btn-primary" onclick="location.href='/learning/'">
+                Начать обучение
+            </button>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

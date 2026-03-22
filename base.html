@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="ru"><head>
+    <meta charset="UTF-8">
+    <title>{% block title %}EnglishKids{% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #ff9f1c;
+            --secondary: #5f6cff;
+            --accent: #2ec4b6;
+            --bg-gradient: linear-gradient(135deg, #eef2ff, #fef6e4);
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text: #1f2937;
+            --text-light: #6b7280;
+            --radius: 20px;
+            --shadow: 0 15px 40px rgba(0,0,0,0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Inter", system-ui, sans-serif;
+        }
+
+        body {
+            background: var(--bg-gradient);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        a { 
+            text-decoration: none; 
+            color: inherit;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--primary);
+        }
+
+        header {
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .header-container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+            align-items: center;
+        }
+
+        nav a {
+            font-weight: 500;
+            font-size: 15px;
+            position: relative;
+        }
+
+        nav a:after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary);
+            transition: width 0.3s;
+        }
+
+        nav a:hover:after {
+            width: 100%;
+        }
+
+        .logo {
+            font-weight: 800;
+            font-size: 24px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .btn {
+            padding: 12px 32px;
+            border-radius: 999px;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: all .3s ease;
+            display: inline-block;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--text);
+            border: 2px solid var(--primary);
+        }
+
+        section {
+            padding: 80px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        h2 {
+            font-size: 38px;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        footer {
+            background: rgba(255,255,255,0.95);
+            padding: 60px 20px 40px;
+            margin-top: 100px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 50px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 12px;
+        }
+
+        .footer-section ul li a {
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        .footer-section ul li a:hover {
+            color: var(--primary);
+        }
+
+        .footer-brand {
+            font-weight: 800;
+            font-size: 26px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 15px;
+        }
+
+        .footer-brand-desc {
+            color: var(--text-light);
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.3s;
+        }
+
+        .social-icon:hover {
+            transform: translateY(-3px) scale(1.1);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(0,0,0,0.05);
+            color: var(--text-light);
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            nav ul {
+                gap: 20px;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+        }
+    </style>
+
+    </head><body>{% block extra_styles %}{% endblock %}
+
+
+
+
+<header>
+    <div class="header-container">
+        <div class="logo">EnglishKids</div>
+        <nav>
+            <ul>
+                <li><a href="/">Главная</a></li>
+                <li><a href="/learning/">Обучение</a></li>
+                <li><a href="/about">О нас</a></li>
+            </ul>
+        </nav>
+        <a href="/profile/" class="btn btn-primary">Мой кабинет</a>
+    </div>
+</header>
+
+{% block content %}{% endblock %}
+
+<footer>
+    <div class="footer-content">
+        <div class="footer-section">
+            <div class="footer-brand">EnglishKids</div>
+            <p class="footer-brand-desc">
+                Современная платформа для изучения английского языка детьми. 
+                Обучение через интересы, игры и практику без стресса.
+            </p>
+            <div class="footer-socials">
+                <a href="#" class="social-icon">📷</a>
+                <a href="#" class="social-icon">🎵</a>
+                <a href="#" class="social-icon">💬</a>
+            </div>
+        </div>
+        
+        <div class="footer-section">
+            <h4>Обучение</h4>
+            <ul>
+                <li><a href="/courses/">Курсы</a></li>
+                <li><a href="/test/">Тест уровня</a></li>
+                <li><a href="/learning/">Мои уроки</a></li>
+                <li><a href="/profile/">Прогресс</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Компания</h4>
+            <ul>
+                <li><a href="about">О нас</a></li>
+                <li><a href="#">Методика</a></li>
+                <li><a href="#">Преподаватели</a></li>
+                <li><a href="#">Контакты</a></li>
+            </ul>
+        </div>
+
+        <div class="footer-section">
+            <h4>Поддержка</h4>
+            <ul>
+                <li><a href="#">Помощь</a></li>
+                <li><a href="#">FAQ</a></li>
+                <li><a href="#">Политика</a></li>
+                <li><a href="#">Условия</a></li>
+            </ul>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>© 2026 EnglishKids. Все права защищены.</p>
+    </div>
+</footer>
+
+
+
+</body></html>

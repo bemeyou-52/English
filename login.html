@@ -1,0 +1,159 @@
+
+{% extends "main/base.html" %}
+{% block title %}Вход — EnglishKids{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .auth-container {
+        max-width: 450px;
+        margin: 80px auto;
+        padding: 50px;
+        background: white;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    .auth-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .auth-header h1 {
+        font-size: 32px;
+        margin-bottom: 10px;
+        font-weight: 800;
+    }
+
+    .auth-header p {
+        color: var(--text-light);
+        font-size: 15px;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--text);
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e5e7eb;
+        border-radius: 12px;
+        font-size: 15px;
+        transition: all 0.3s;
+    }
+
+    .form-group input:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(255, 159, 28, 0.1);
+    }
+
+    .submit-btn {
+        width: 100%;
+        padding: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+        margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .auth-footer {
+        text-align: center;
+        margin-top: 25px;
+        padding-top: 25px;
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .auth-footer p {
+        color: var(--text-light);
+        font-size: 14px;
+    }
+
+    .auth-footer a {
+        color: var(--primary);
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .auth-footer a:hover {
+        text-decoration: underline;
+    }
+
+    .alert {
+        padding: 14px 18px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-size: 14px;
+    }
+
+    .alert-error {
+        background: #fee;
+        color: #c33;
+        border: 1px solid #fcc;
+    }
+
+    .alert-success {
+        background: #efe;
+        color: #3c3;
+        border: 1px solid #cfc;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="auth-container">
+        <div class="auth-header">
+            <h1>Вход в аккаунт</h1>
+            <p>Рады видеть вас снова!</p>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+            <input type="hidden" name="next" value="{{ next }}">
+            
+            <div class="form-group">
+                <label for="username">Имя пользователя</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <button type="submit" class="submit-btn">Войти</button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Нет аккаунта? <a href="/register/">Зарегистрироваться</a></p>
+        </div>
+    </div>
+</div>
+{% endblock %}

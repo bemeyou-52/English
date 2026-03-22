@@ -1,0 +1,272 @@
+
+{% extends "main/base.html" %}
+{% block title %}Выбор уровня — EnglishKids{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .level-select-container {
+        max-width: 900px;
+        margin: 80px auto;
+    }
+
+    .level-select-header {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .level-select-header h1 {
+        font-size: 42px;
+        margin-bottom: 15px;
+        font-weight: 900;
+    }
+
+    .level-select-header p {
+        font-size: 18px;
+        color: var(--text-light);
+    }
+
+    .levels-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 25px;
+        margin-bottom: 40px;
+    }
+
+    .level-option {
+        background: white;
+        padding: 35px 25px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        cursor: pointer;
+        border: 3px solid transparent;
+        transition: all 0.3s;
+    }
+
+    .level-option:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+    }
+
+    .level-option.selected {
+        border-color: var(--primary);
+        background: linear-gradient(135deg, rgba(255, 159, 28, 0.05), rgba(95, 108, 255, 0.05));
+    }
+
+    .level-badge {
+        display: inline-block;
+        padding: 12px 24px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border-radius: 999px;
+        font-size: 24px;
+        font-weight: 800;
+        margin-bottom: 15px;
+    }
+
+    .level-name {
+        font-size: 20px;
+        font-weight: 700;
+        margin-bottom: 8px;
+    }
+
+    .level-description {
+        font-size: 14px;
+        color: var(--text-light);
+        line-height: 1.5;
+    }
+
+    .submit-container {
+        text-align: center;
+        margin-top: 40px;
+    }
+
+    .submit-btn {
+        padding: 16px 50px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border: none;
+        border-radius: 999px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    }
+
+    .submit-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    .info-section {
+        background: linear-gradient(135deg, rgba(95, 108, 255, 0.05), rgba(255, 159, 28, 0.05));
+        padding: 40px;
+        border-radius: var(--radius);
+        margin-top: 50px;
+    }
+
+    .info-section h3 {
+        font-size: 22px;
+        margin-bottom: 20px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+
+    .info-item {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .info-item strong {
+        color: var(--primary);
+        display: block;
+        margin-bottom: 8px;
+    }
+
+    .info-item p {
+        color: var(--text-light);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    @media (max-width: 768px) {
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="level-select-container">
+        <div class="level-select-header">
+            <h1>Выберите свой уровень</h1>
+            <p>Выберите уровень, который лучше всего соответствует вашим знаниям</p>
+        </div>
+
+        <form method="POST" id="levelForm">
+            {% csrf_token %}
+            <div class="levels-grid">
+                <div class="level-option" onclick="selectLevel('A1', this)">
+                    <div class="level-badge">A1</div>
+                    <div class="level-name">Начальный</div>
+                    <p class="level-description">
+                        Базовые фразы, приветствия, простые вопросы
+                    </p>
+                </div>
+
+                <div class="level-option" onclick="selectLevel('A2', this)">
+                    <div class="level-badge">A2</div>
+                    <div class="level-name">Элементарный</div>
+                    <p class="level-description">
+                        Повседневные темы, простые диалоги
+                    </p>
+                </div>
+
+                <div class="level-option" onclick="selectLevel('B1', this)">
+                    <div class="level-badge">B1</div>
+                    <div class="level-name">Средний</div>
+                    <p class="level-description">
+                        Уверенное общение на знакомые темы
+                    </p>
+                </div>
+
+                <div class="level-option" onclick="selectLevel('B2', this)">
+                    <div class="level-badge">B2</div>
+                    <div class="level-name">Выше среднего</div>
+                    <p class="level-description">
+                        Свободное общение, сложные тексты
+                    </p>
+                </div>
+
+                <div class="level-option" onclick="selectLevel('С1', this)">
+                    <div class="level-badge">С1</div>
+                    <div class="level-name">Продвинутый</div>
+                    <p class="level-description">
+                        Знание языка на уровне носителя
+                    </p>
+                </div>
+
+                <div class="level-option" onclick="selectLevel('С2', this)">
+                    <div class="level-badge">С2</div>
+                    <div class="level-name">Профессиональный</div>
+                    <p class="level-description">
+                        Свободное чтение Шекспира в оригинале
+                    </p>
+                </div>
+            </div>
+
+            <input type="hidden" name="level" id="selectedLevel">
+
+            <div class="submit-container">
+                <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                    Начать обучение
+                </button>
+            </div>
+        </form>
+
+        <div class="info-section">
+            <h3>Описание уровней</h3>
+            <div class="info-grid">
+                <div class="info-item">
+                    <strong>A1 - Начальный</strong>
+                    <p>Понимаю и использую знакомые фразы и очень простые предложения. Могу представиться и задавать простые вопросы.</p>
+                </div>
+                <div class="info-item">
+                    <strong>A2 - Элементарный</strong>
+                    <p>Понимаю фразы на повседневные темы. Могу описать свое окружение, семью, работу простыми предложениями.</p>
+                </div>
+                <div class="info-item">
+                    <strong>B1 - Средний</strong>
+                    <p>Понимаю основные мысли на знакомые темы. Могу общаться в большинстве ситуаций во время путешествий.</p>
+                </div>
+                <div class="info-item">
+                    <strong>B2 - Продвинутый</strong>
+                    <p>Понимаю основные идеи сложных текстов, общаюсь с носителями без значительных трудностей.</p>
+                </div>
+                <div class="info-item">
+                    <strong>С1 - Продвинутый</strong>
+                    <p>Понимаю сложные и длинных текста, выражаю мысли спонтанно и свободно.</p>
+                </div>
+                <div class="info-item">
+                    <strong>С2 - Продвинутый</strong>
+                    <p>Понимаю практически всё услышанное или прочитанное, излагаю аргументы и факты логично и последовательно.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedLevelValue = null;
+
+    function selectLevel(level, element) {
+        // Убираем выделение со всех опций
+        document.querySelectorAll('.level-option').forEach(opt => {
+            opt.classList.remove('selected');
+        });
+        
+        // Выделяем выбранную опцию
+        element.classList.add('selected');
+        selectedLevelValue = level;
+        
+        // Обновляем скрытое поле
+        document.getElementById('selectedLevel').value = level;
+        
+        // Активируем кнопку отправки
+        document.getElementById('submitBtn').disabled = false;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,796 @@
+
+{% extends "main/base.html" %}
+{% block title %}Главная — EnglishKids | Английский для детей{% endblock %}
+
+{% block extra_styles %}
+<style>
+    /* ===== HERO SECTION ===== */
+    .hero {
+        text-align: center;
+        position: relative;
+        padding: 100px 20px 80px;
+        background: linear-gradient(135deg, rgba(95, 108, 255, 0.05), rgba(255, 159, 28, 0.05));
+        border-radius: 30px;
+        margin-bottom: 40px;
+    }
+
+    .hero h1 {
+        font-size: 56px;
+        margin-bottom: 25px;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 20px;
+        max-width: 700px;
+        margin: 0 auto 40px;
+        color: var(--text-light);
+        line-height: 1.7;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .hero-stats {
+        display: flex;
+        justify-content: center;
+        gap: 60px;
+        margin-top: 60px;
+        flex-wrap: wrap;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 42px;
+        font-weight: 800;
+        color: var(--primary);
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 14px;
+        color: var(--text-light);
+        margin-top: 5px;
+    }
+
+    /* ===== FEATURES GRID ===== */
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-top: 50px;
+    }
+
+    .feature-card {
+        background: var(--card-bg);
+        backdrop-filter: blur(10px);
+        padding: 40px 30px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        text-align: center;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 50px rgba(0,0,0,0.12);
+        border-color: var(--primary);
+    }
+
+    .feature-icon {
+        font-size: 56px;
+        margin-bottom: 20px;
+        display: block;
+    }
+
+    .feature-card h3 {
+        font-size: 22px;
+        margin-bottom: 12px;
+        color: var(--text);
+    }
+
+    .feature-card p {
+        color: var(--text-light);
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /* ===== COURSES SECTION ===== */
+    .courses-section {
+        background: white;
+        border-radius: 30px;
+        padding: 60px 40px;
+        box-shadow: var(--shadow);
+    }
+
+    .courses-section h2 {
+        text-align: center;
+        margin-bottom: 15px;
+    }
+
+    .courses-subtitle {
+        text-align: center;
+        color: var(--text-light);
+        font-size: 18px;
+        margin-bottom: 50px;
+    }
+
+    .carousel-wrapper {
+        overflow: hidden;
+        position: relative;
+        margin-top: 40px;
+        padding: 20px 0;
+    }
+
+    .carousel-track {
+        display: flex;
+        gap: 24px;
+        animation: scroll 30s linear infinite;
+        width: max-content;
+    }
+
+    .course-card {
+        min-width: 280px;
+        background: linear-gradient(135deg, rgba(255, 159, 28, 0.1), rgba(95, 108, 255, 0.1));
+        backdrop-filter: blur(10px);
+        padding: 35px 28px;
+        border-radius: var(--radius);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        cursor: pointer;
+        font-weight: 600;
+        text-align: center;
+        transition: all 0.3s;
+        border: 2px solid transparent;
+    }
+
+    .course-card:hover {
+        transform: translateY(-5px);
+        border-color: var(--primary);
+        background: linear-gradient(135deg, rgba(255, 159, 28, 0.2), rgba(95, 108, 255, 0.2));
+    }
+
+    .course-icon {
+        font-size: 48px;
+        display: block;
+        margin-bottom: 15px;
+    }
+
+    .course-title {
+        font-size: 20px;
+        margin-bottom: 8px;
+    }
+
+    .course-desc {
+        font-size: 13px;
+        color: var(--text-light);
+        font-weight: 400;
+    }
+
+    @keyframes scroll {
+        from { transform: translateX(0); }
+        to { transform: translateX(-50%); }
+    }
+
+    /* ===== STRATEGY ===== */
+    .strategy {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 50px;
+        background: var(--card-bg);
+        backdrop-filter: blur(12px);
+        padding: 60px;
+        border-radius: var(--radius);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        align-items: center;
+    }
+
+    .strategy h2 {
+        margin-bottom: 30px;
+    }
+
+    .strategy ul {
+        list-style: none;
+    }
+
+    .strategy ul li {
+        margin-bottom: 20px;
+        font-size: 18px;
+        padding-left: 50px;
+        position: relative;
+    }
+
+    .strategy ul li:before {
+        content: attr(data-icon);
+        position: absolute;
+        left: 0;
+        font-size: 32px;
+    }
+
+    .strategy-image {
+        width: 100%;
+        height: 350px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: var(--radius);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 120px;
+        opacity: 0.8;
+    }
+
+    /* ===== HOW IT WORKS ===== */
+    .how-it-works {
+        background: white;
+        border-radius: 30px;
+        padding: 60px 40px;
+        box-shadow: var(--shadow);
+    }
+
+    .how-it-works h2 {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .steps-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 40px;
+    }
+
+    .step-item {
+        text-align: center;
+        position: relative;
+    }
+
+    .step-number {
+        width: 60px;
+        height: 60px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 28px;
+        font-weight: 800;
+        margin: 0 auto 20px;
+    }
+
+    .step-item h3 {
+        margin-bottom: 10px;
+        font-size: 20px;
+    }
+
+    .step-item p {
+        color: var(--text-light);
+        font-size: 15px;
+        line-height: 1.6;
+    }
+
+    /* ===== TESTIMONIALS ===== */
+    .testimonials {
+        background: linear-gradient(135deg, rgba(95, 108, 255, 0.05), rgba(255, 159, 28, 0.05));
+        border-radius: 30px;
+        padding: 60px 40px;
+    }
+
+    .testimonials h2 {
+        text-align: center;
+        margin-bottom: 50px;
+    }
+
+    .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+    }
+
+    .testimonial-card {
+        background: white;
+        padding: 30px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    .testimonial-text {
+        font-size: 15px;
+        line-height: 1.7;
+        color: var(--text-light);
+        margin-bottom: 20px;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+    }
+
+    .author-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+    }
+
+    .author-info h4 {
+        font-size: 16px;
+        margin-bottom: 3px;
+    }
+
+    .author-info p {
+        font-size: 13px;
+        color: var(--text-light);
+    }
+
+    /* ===== CTA SECTION ===== */
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 30px;
+        padding: 80px 40px;
+        text-align: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section:before {
+        pointer-events: none;
+        content: '🎓📚✨🌟';
+        position: absolute;
+        font-size: 100px;
+        opacity: 0.1;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        letter-spacing: 50px;
+    }
+
+    .cta-section h2 {
+        color: white;
+        margin-bottom: 20px;
+        position: relative;
+    }
+
+    .cta-section p {
+        font-size: 18px;
+        margin-bottom: 40px;
+        opacity: 0.95;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+        position: relative;
+    }
+
+    /* ===== MODAL ===== */
+    .modal {
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.6);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+        background: white;
+        padding: 40px;
+        border-radius: var(--radius);
+        max-width: 450px;
+        width: 90%;
+        position: relative;
+        text-align: center;
+        box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+    }
+
+    .close {
+        position: absolute;
+        top: 15px;
+        right: 20px;
+        font-size: 28px;
+        cursor: pointer;
+        color: var(--text-light);
+        transition: color 0.3s;
+    }
+
+    .close:hover {
+        color: var(--primary);
+    }
+
+    .modal-content h3 {
+        margin-bottom: 30px;
+        font-size: 26px;
+    }
+
+    .modal-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        margin-top: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 36px;
+        }
+
+        .strategy {
+            grid-template-columns: 1fr;
+        }
+
+        .strategy-image {
+            height: 250px;
+        }
+
+        .hero-stats {
+            gap: 30px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero container">
+    <h1>Английский, который реально нужен</h1>
+    <p>
+        Изучайте английский через интересы вашего ребенка: наука, литература, путешествия. 
+        Современная методика, игровой формат и система мотивации для эффективного обучения без стресса.
+    </p>
+    <div class="hero-buttons">
+        <button class="btn btn-primary" onclick="handleStart()">Начать обучение</button>
+        <button class="btn btn-secondary" onclick="location.href='about'">Узнать больше</button>
+    </div>
+    
+    <div class="hero-stats">
+        <div class="stat-item">
+            <span class="stat-number">5000+</span>
+            <span class="stat-label">Активных учеников</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">15+</span>
+            <span class="stat-label">Курсов по интересам</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">95%</span>
+            <span class="stat-label">Довольных родителей</span>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="container">
+    <h2 style="text-align: center;">Почему выбирают EnglishKids</h2>
+    <p style="text-align: center; color: var(--text-light); margin-bottom: 30px; font-size: 18px;">
+        Уникальный подход к обучению детей английскому языку
+    </p>
+    
+    <div class="features-grid">
+        <div class="feature-card">
+            <span class="feature-icon">🎮</span>
+            <h3>Игровой формат</h3>
+            <p>Обучение через игры, квесты и интерактивные задания. Ребенок учится с удовольствием!</p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">🎯</span>
+            <h3>Персонализация</h3>
+            <p>Курсы адаптируются под интересы каждого ребенка: от космоса до кулинарии.</p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">🏆</span>
+            <h3>Система наград</h3>
+            <p>Достижения, бейджи и рейтинги мотивируют продолжать обучение каждый день.</p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">📊</span>
+            <h3>Отслеживание прогресса</h3>
+            <p>Родители видят детальную статистику успехов и областей для улучшения.</p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">👨‍🏫</span>
+            <h3>Опытные педагоги</h3>
+            <p>Наши методисты разработали программу на основе современных исследований.</p>
+        </div>
+        
+        <div class="feature-card">
+            <span class="feature-icon">💬</span>
+            <h3>Живая практика</h3>
+            <p>Интерактивные диалоги, аудирование и произношение с современными технологиями.</p>
+        </div>
+    </div>
+</section>
+
+<!-- COURSES SECTION -->
+<section class="container">
+    <div class="courses-section">
+        <h2>Наши курсы</h2>
+        <p class="courses-subtitle">
+            Выберите направление, которое вам интересно
+        </p>
+
+        <div class="carousel-wrapper">
+            <div class="carousel-track">
+                {% for course in courses %}
+                <div class="course-card" onclick="handleStart()">
+                    <span class="course-icon">{{ course.icon }}</span>
+                    <div class="course-title">{{ course.title }}</div>
+                    <div class="course-desc">{{ course.description }}</div>
+                </div>
+                {% empty %}
+                <div class="course-card">
+                    <span class="course-icon">📚</span>
+                    <div class="course-title">Курсы загружаются</div>
+                    <div class="course-desc">Добавьте курсы через панель администратора</div>
+                </div>
+                {% endfor %}
+                {% for course in courses %}
+                <div class="course-card" onclick="handleStart()">
+                    <span class="course-icon">{{ course.icon }}</span>
+                    <div class="course-title">{{ course.title }}</div>
+                    <div class="course-desc">{{ course.description }}</div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="container">
+    <div class="how-it-works">
+        <h2>Как это работает</h2>
+        
+        <div class="steps-grid">
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <h3>Зарегистрируйтесь на платформе</h3>
+                <p>Создайте аккаунт за 1 минуту и получите доступ к бесплатному первому уроку.</p>
+            </div>
+
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <h3>Определите уровень</h3>
+                <p>Пройдите быстрый тест или выберите уровень самостоятельно, если уже знаете его.</p>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <h3>Выберите курс</h3>
+                <p>Найдите направление, которое интересно вашему ребенку: наука, спорт, искусство.</p>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">4</div>
+                <h3>Учитесь с удовольствием</h3>
+                <p>Проходите уроки в игровом формате, зарабатывайте награды и отслеживайте прогресс.</p>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">5</div>
+                <h3>Достигайте результатов</h3>
+                <p>Уже через месяц вы заметите значительное улучшение языковых навыков!</p>
+            </div>
+
+            <div class="step-item">
+                <div class="step-number">6</div>
+                <h3>Получайте сертификат и новые возможности</h3>
+                <p>Подтвердите уровень знаний, откройте доступ к продвинутым курсам и продолжайте развиваться.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STRATEGY SECTION -->
+<section class="container">
+    <div class="strategy">
+        <div>
+            <h2>Наша стратегия обучения</h2>
+            <p style="color: var(--text-light); margin-bottom: 30px; line-height: 1.7;">
+                Комплексный подход к изучению языка через 4 ключевых навыка, которые развиваются параллельно для максимальной эффективности.
+            </p>
+            <ul>
+                <li data-icon="📖">
+                    <strong>Чтение и понимание текстов</strong><br>
+                    <span style="font-size: 15px; color: var(--text-light);">Адаптированные материалы по интересам</span>
+                </li>
+                <li data-icon="🎧">
+                    <strong>Слушание и восприятие речи</strong><br>
+                    <span style="font-size: 15px; color: var(--text-light);">Аудио от носителей языка</span>
+                </li>
+                <li data-icon="✍️">
+                    <strong>Грамматика и письмо</strong><br>
+                    <span style="font-size: 15px; color: var(--text-light);">Практические упражнения без зубрежки</span>
+                </li>
+                <li data-icon="📝">
+                    <strong>Эссе и свободное выражение</strong><br>
+                    <span style="font-size: 15px; color: var(--text-light);">Развитие креативного мышления</span>
+                </li>
+            </ul>
+        </div>
+        <div class="strategy-image">
+            🎓
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="container">
+    <div class="testimonials">
+        <h2>Что говорят родители</h2>
+        
+        <div class="testimonials-grid">
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "Мой сын раньше не любил английский, но EnglishKids изменил все! Теперь он сам просит позаниматься. Курс по науке просто супер!"
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">👩</div>
+                    <div class="author-info">
+                        <h4>Анна Петрова</h4>
+                        <p>Мама ученика 8 лет</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "Дочка занимается уже 3 месяца. Прогресс очевиден! В школе стала получать пятерки, а главное - появился интерес к языку."
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">👨</div>
+                    <div class="author-info">
+                        <h4>Дмитрий Соколов</h4>
+                        <p>Папа ученицы 10 лет</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-card">
+                <p class="testimonial-text">
+                    "Удобная платформа, понятный интерфейс. Ребенок легко разобрался сам. Система наград реально мотивирует заниматься каждый день!"
+                </p>
+                <div class="testimonial-author">
+                    <div class="author-avatar">👩</div>
+                    <div class="author-info">
+                        <h4>Елена Краснова</h4>
+                        <p>Мама ученика 12 лет</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="container">
+    <div class="cta-section">
+        <h2>Начните обучение прямо сейчас!</h2>
+        <p>
+            Присоединяйтесь к тысячам детей, которые уже изучают английский с удовольствием. 
+            Первый урок бесплатно!
+        </p>
+        <button class="btn" style="background: white; color: var(--primary);" onclick="handleStart()">
+            Попробовать прямо сейчас
+        </button>
+    </div>
+</section>
+
+<!-- ONBOARDING MODAL -->
+<div class="modal" id="modal">
+    <div class="modal-content" style="max-width:520px; padding:50px 40px;">
+        <span class="close" onclick="closeModal()">×</span>
+
+        <!-- STEP 1: Goal -->
+        <div id="step1">
+            <h3 style="margin-bottom:10px;">Для чего вы изучаете английский?</h3>
+            <p style="color:var(--text-light); margin-bottom:28px; font-size:15px;">Мы подберём курс специально под вашу цель</p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" style="text-align:left; padding:14px 22px;" onclick="selectGoal('travel')">✈️ &nbsp; Путешествия</button>
+                <button class="btn btn-primary" style="text-align:left; padding:14px 22px;" onclick="selectGoal('work')">💼 &nbsp; Работа / карьера</button>
+                <button class="btn btn-primary" style="text-align:left; padding:14px 22px;" onclick="selectGoal('study')">📚 &nbsp; Учёба</button>
+                <button class="btn btn-primary" style="text-align:left; padding:14px 22px;" onclick="selectGoal('hobby')">🌟 &nbsp; Саморазвитие</button>
+                <button class="btn btn-primary" style="text-align:left; padding:14px 22px;" onclick="selectGoal('exam')">🎓 &nbsp; Подготовка к экзамену</button>
+                <button class="btn btn-secondary" style="text-align:left; padding:14px 22px;" onclick="selectGoal('other')">🤷 &nbsp; Другое</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: Know level? -->
+        <div id="step2" style="display:none;">
+            <h3 style="margin-bottom:10px;">Знаете ли вы свой уровень?</h3>
+            <p style="color:var(--text-light); margin-bottom:28px; font-size:15px;">Это поможет нам сразу начать с подходящих материалов</p>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="goLevelSelect()">✅ &nbsp; Да, знаю свой уровень</button>
+                <button class="btn btn-secondary" onclick="goTest()">🧩 &nbsp; Нет, пройти тест для определения уровня</button>
+            </div>
+            <button onclick="showStep(1)" style="background:none; border:none; color:var(--text-light); cursor:pointer; margin-top:20px; font-size:14px;">← Назад</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let selectedGoal = '';
+
+    function handleStart() {
+        {% if user.is_authenticated %}
+            window.location.href = '/level-check/';
+        {% else %}
+            openModal();
+        {% endif %}
+    }
+
+    function openModal() {
+        showStep(1);
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function closeModal() {
+        document.getElementById('modal').style.display = 'none';
+    }
+
+    function showStep(n) {
+        document.getElementById('step1').style.display = n === 1 ? 'block' : 'none';
+        document.getElementById('step2').style.display = n === 2 ? 'block' : 'none';
+    }
+
+    function selectGoal(goal) {
+        selectedGoal = goal;
+        // If not logged in — redirect to register with goal saved in session storage
+        {% if user.is_authenticated %}
+            // save goal and continue
+            fetch('/level-check/', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/x-www-form-urlencoded', 'X-CSRFToken': '{{ csrf_token }}'},
+                body: `goal=${goal}&knows_level=pending`
+            }).then(() => showStep(2));
+        {% else %}
+            sessionStorage.setItem('goal', goal);
+            showStep(2);
+        {% endif %}
+    }
+
+    function goLevelSelect() {
+        {% if user.is_authenticated %}
+            window.location.href = '/level-select/';
+        {% else %}
+            window.location.href = '/register/?next=/level-select/';
+        {% endif %}
+    }
+
+    function goTest() {
+        {% if user.is_authenticated %}
+            window.location.href = '/test/';
+        {% else %}
+            window.location.href = '/register/?next=/test/';
+        {% endif %}
+    }
+
+    window.onclick = function(event) {
+        const modal = document.getElementById('modal');
+        if (event.target == modal) closeModal();
+    }
+</script>
+
+{% endblock %}

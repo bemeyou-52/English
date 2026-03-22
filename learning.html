@@ -1,0 +1,397 @@
+{% extends "main/base.html" %}
+{% block title %}Обучение — EnglishForEveryone{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .learning-container {
+        max-width: 900px;
+        margin: 60px auto;
+    }
+
+    .learning-header {
+        background: white;
+        padding: 40px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+        margin-bottom: 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .user-info h1 {
+        font-size: 36px;
+        font-weight: 900;
+        margin-bottom: 10px;
+    }
+
+    .level-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        border-radius: 999px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .stats-grid {
+        display: flex;
+        gap: 30px;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        display: block;
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--primary);
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 13px;
+        color: var(--text-light);
+    }
+
+    /* LESSON PATH - Duolingo Style */
+    .lesson-path {
+        position: relative;
+        padding: 40px 0;
+    }
+
+    .path-line {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 100%;
+        background: linear-gradient(180deg, 
+            var(--primary) 0%, 
+            var(--primary) 40%,
+            #e5e7eb 40%,
+            #e5e7eb 100%
+        );
+        border-radius: 3px;
+        z-index: 0;
+    }
+
+    .lesson-item {
+        position: relative;
+        margin-bottom: 80px;
+        display: flex;
+        justify-content: center;
+    }
+
+    .lesson-item:nth-child(even) {
+        justify-content: flex-start;
+        padding-left: 20%;
+    }
+
+    .lesson-item:nth-child(odd) {
+        justify-content: flex-end;
+        padding-right: 20%;
+    }
+
+    .lesson-node {
+        position: relative;
+        z-index: 2;
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 48px;
+        cursor: pointer;
+        transition: all 0.3s;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    }
+
+    .lesson-node.completed {
+        background: linear-gradient(135deg, #10b981, #059669);
+        border: 5px solid #d1fae5;
+    }
+
+    .lesson-node.current {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border: 5px solid #fef3c7;
+        animation: pulse 2s infinite;
+    }
+
+    .lesson-node.locked {
+        background: #e5e7eb;
+        border: 5px solid #f3f4f6;
+        cursor: not-allowed;
+        filter: grayscale(1);
+        opacity: 0.6;
+    }
+
+    .lesson-node:not(.locked):hover {
+        transform: scale(1.1);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    }
+
+    @keyframes pulse {
+        0%, 100% {
+            box-shadow: 0 10px 30px rgba(255, 159, 28, 0.3);
+        }
+        50% {
+            box-shadow: 0 10px 40px rgba(255, 159, 28, 0.6);
+        }
+    }
+
+    .lesson-info {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background: white;
+        padding: 20px 25px;
+        border-radius: 15px;
+        box-shadow: var(--shadow);
+        min-width: 200px;
+    }
+
+    .lesson-item:nth-child(even) .lesson-info {
+        right: calc(100% + 30px);
+        text-align: right;
+    }
+
+    .lesson-item:nth-child(odd) .lesson-info {
+        left: calc(100% + 30px);
+        text-align: left;
+    }
+
+    .lesson-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 5px;
+    }
+
+    .lesson-progress {
+        font-size: 13px;
+        color: var(--text-light);
+    }
+
+    .lesson-status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 600;
+        margin-top: 8px;
+    }
+
+    .status-completed {
+        background: #d1fae5;
+        color: #059669;
+    }
+
+    .status-current {
+        background: #fef3c7;
+        color: #d97706;
+    }
+
+    .status-locked {
+        background: #f3f4f6;
+        color: #9ca3af;
+    }
+
+    .check-icon {
+        position: absolute;
+        top: -10px;
+        right: -10px;
+        width: 35px;
+        height: 35px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .lock-icon {
+        position: absolute;
+        bottom: -5px;
+        right: -5px;
+        font-size: 24px;
+    }
+
+    .course-complete {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 60px 40px;
+        border-radius: var(--radius);
+        text-align: center;
+        margin-top: 60px;
+    }
+
+    .course-complete h2 {
+        color: white;
+        font-size: 36px;
+        margin-bottom: 15px;
+    }
+
+    .course-complete p {
+        font-size: 18px;
+        opacity: 0.95;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 768px) {
+        .lesson-item:nth-child(even),
+        .lesson-item:nth-child(odd) {
+            justify-content: center;
+            padding: 0;
+        }
+
+        .lesson-info {
+            position: static;
+            transform: none;
+            margin-top: 20px;
+            text-align: center !important;
+        }
+
+        .lesson-item:nth-child(even) .lesson-info,
+        .lesson-item:nth-child(odd) .lesson-info {
+            right: auto;
+            left: auto;
+        }
+
+        .stats-grid {
+            gap: 20px;
+        }
+
+        .learning-header {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="learning-container">
+        <!-- HEADER WITH USER INFO -->
+        <div class="learning-header">
+            <div class="user-info">
+                <h1>Мое обучение</h1>
+                <span class="level-badge">Уровень: {{ user_level }}</span>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-number">{% if streak == 0 %}—{% else %}🔥 {{ streak }}{% endif %}</span>
+                    <span class="stat-label">Дней подряд</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number"><span id="completedCount">0</span>/{{ lessons|length }}</span>
+                    <span class="stat-label">Уроков пройдено</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ profile.xp }}</span>
+                    <span class="stat-label">Опыта</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- LEVEL UP BANNER -->
+        {% if level_up_message %}
+        <div style="background: linear-gradient(135deg, #f59e0b, #fbbf24); border-radius: 20px;
+                    padding: 28px 32px; margin-bottom: 32px; color: white; text-align: center;
+                    box-shadow: 0 8px 32px rgba(245,158,11,0.35); position: relative; overflow: hidden;">
+            <div style="position: absolute; top: -30px; right: -30px; width: 120px; height: 120px;
+                        background: rgba(255,255,255,0.1); border-radius: 50%;"></div>
+            <div style="font-size: 52px; margin-bottom: 10px;">🎓</div>
+            <div style="font-size: 22px; font-weight: 800; margin-bottom: 8px;">
+                Поздравляем!
+            </div>
+            <div style="font-size: 16px; opacity: 0.95; max-width: 480px; margin: 0 auto;">
+                {{ level_up_message }}
+            </div>
+            <div style="margin-top: 16px; font-size: 14px; opacity: 0.8;">
+                Продолжайте в том же духе — впереди новые знания! 🚀
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- LESSON PATH -->
+        <div class="lesson-path">
+            <div class="path-line"></div>
+
+            {% for lesson in lessons %}
+            <div class="lesson-item">
+                <div class="lesson-node {% if lesson.completed %}completed{% elif not lesson.locked %}current{% else %}locked{% endif %}"
+                     {% if not lesson.locked %}onclick="window.location.href='/lesson/{{ lesson.id }}/'"{% endif %}>
+                    
+                    {% if lesson.completed %}
+                        {{ lesson.icon }}
+                        <div class="check-icon">✓</div>
+                    {% elif not lesson.locked %}
+                        {{ lesson.icon }}
+                    {% else %}
+                        🔒
+                        <div class="lock-icon">🔒</div>
+                    {% endif %}
+                </div>
+
+                <div class="lesson-info">
+                    <div class="lesson-title">{{ lesson.title }}</div>
+                    <div class="lesson-progress">
+                        {% if lesson.completed %}
+                            Пройдено · +{{ lesson.xp_reward }} XP
+                        {% elif not lesson.locked %}
+                            Нажмите, чтобы начать
+                        {% else %}
+                            Пройдите предыдущий урок
+                        {% endif %}
+                    </div>
+                    <span class="lesson-status {% if lesson.completed %}status-completed{% elif not lesson.locked %}status-current{% else %}status-locked{% endif %}">
+                        {% if lesson.completed %}
+                            Завершено
+                        {% elif not lesson.locked %}
+                            Доступно
+                        {% else %}
+                            Заблокировано
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+            {% empty %}
+            <div style="text-align:center; padding: 60px 20px;">
+                <div style="font-size:60px; margin-bottom:20px;">📚</div>
+                <h2>Уроки для уровня {{ user_level }} ещё не добавлены</h2>
+                <p style="color:var(--text-light); margin-bottom:30px;">Добавьте курсы и уроки через панель администратора</p>
+            </div>
+            {% endfor %}
+
+            <!-- COMPLETION MESSAGE -->
+            <div class="lesson-item" style="margin-top: 100px;">
+                <div class="course-complete">
+                    <h2>🏆 Скоро здесь появятся новые уроки!</h2>
+                    <p>Вы отлично справляетесь! Продолжайте в том же духе.</p>
+                    <button class="btn" style="background: white; color: var(--primary);" onclick="location.href='/profile/'">
+                        Посмотреть прогресс
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+const lessonData = [
+    {% for l in lessons %}
+    {{ l.completed|yesno:"true,false" }}{% if not forloop.last %},{% endif %}
+    {% endfor %}
+];
+document.getElementById('completedCount').textContent = lessonData.filter(Boolean).length;
+</script>
+{% endblock %}

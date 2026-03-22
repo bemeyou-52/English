@@ -1,0 +1,328 @@
+{% extends "main/base.html" %}
+{% block title %}Мой кабинет — EnglishKids{% endblock %}
+
+{% block extra_styles %}
+<style>
+    .profile-container { max-width: 1000px; margin: 60px auto; }
+
+    .profile-header {
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        color: white;
+        padding: 50px 40px;
+        border-radius: var(--radius);
+        margin-bottom: 40px;
+        display: flex;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .profile-avatar {
+        width: 120px; height: 120px;
+        background: white;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 60px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        flex-shrink: 0;
+    }
+
+    .profile-info h1 { font-size: 36px; margin-bottom: 10px; color: white; }
+    .profile-info p { opacity: 0.95; font-size: 16px; }
+
+    .streak-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255,255,255,0.2);
+        padding: 8px 18px;
+        border-radius: 999px;
+        font-weight: 700;
+        font-size: 18px;
+        margin-top: 12px;
+    }
+
+    .profile-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 30px;
+        margin-bottom: 40px;
+    }
+
+    .profile-card {
+        background: white;
+        padding: 35px 30px;
+        border-radius: var(--radius);
+        box-shadow: var(--shadow);
+    }
+
+    .profile-card h3 {
+        font-size: 20px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .profile-card h3 span { font-size: 28px; }
+
+    .stat-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+
+    .stat-row:last-child { border-bottom: none; }
+    .stat-label { color: var(--text-light); font-size: 14px; }
+    .stat-value { font-size: 20px; font-weight: 700; color: var(--primary); }
+
+    .achievements-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+        gap: 15px;
+    }
+
+    .achievement-badge {
+        aspect-ratio: 1;
+        background: linear-gradient(135deg, rgba(255,159,28,0.1), rgba(95,108,255,0.1));
+        border-radius: 15px;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        padding: 15px;
+        transition: all 0.3s;
+        cursor: pointer;
+    }
+
+    .achievement-badge:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .achievement-badge.locked { opacity: 0.3; filter: grayscale(1); }
+    .achievement-icon { font-size: 40px; margin-bottom: 8px; }
+    .achievement-name { font-size: 11px; font-weight: 600; text-align: center; }
+
+    .recent-activity { background: white; padding: 35px 30px; border-radius: var(--radius); box-shadow: var(--shadow); }
+
+    .activity-item {
+        display: flex; gap: 20px;
+        padding: 20px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .activity-item:last-child { border-bottom: none; }
+
+    .activity-icon {
+        width: 50px; height: 50px;
+        background: linear-gradient(135deg, var(--primary), var(--secondary));
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+
+    .activity-details h4 { font-size: 16px; margin-bottom: 5px; }
+    .activity-details p { font-size: 13px; color: var(--text-light); }
+
+    .logout-btn {
+        background: #fee; color: #c33; border: 2px solid #fcc;
+        padding: 12px 30px; border-radius: 999px; font-weight: 600;
+        cursor: pointer; transition: all 0.3s; margin-top: 30px;
+    }
+
+    .logout-btn:hover { background: #fcc; transform: translateY(-2px); }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="profile-container">
+        <!-- PROFILE HEADER -->
+        <div class="profile-header">
+            <div class="profile-avatar">{{ profile.avatar }}</div>
+            <div class="profile-info">
+                <h1>{{ user.username }}</h1>
+                <p>{{ user.email }}</p>
+                <p style="margin-top:8px;">
+                    Уровень: <strong>{{ profile.level|default:"Не определён" }}</strong>
+                    {% if profile.goal %}
+                    &nbsp;·&nbsp; Цель: <strong>{{ profile.get_goal_display }}</strong>
+                    {% endif %}
+                </p>
+                <div class="streak-badge">
+                    🔥 {{ streak }} {% if streak == 1 %}день{% elif streak < 5 %}дня{% else %}дней{% endif %} подряд
+                </div>
+            </div>
+        </div>
+
+        <!-- EDIT PROFILE -->
+<div class="profile-card" style="margin-bottom: 30px;">
+    <h3><span>✏️</span> Редактировать профиль</h3>
+
+    {% if messages %}
+        {% for message in messages %}
+        <div style="padding: 10px 16px; border-radius: 10px; margin-bottom: 16px;
+            background: {% if message.tags == 'error' %}#fee2e2; color: #dc2626{% else %}#d1fae5; color: #065f46{% endif %};">
+            {{ message }}
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- Смена имени -->
+    <form method="post" action="/profile/" style="margin-bottom: 24px;">
+        {% csrf_token %}
+        <input type="hidden" name="change_username" value="1">
+        <label style="font-size: 13px; font-weight: 600; color: var(--text-light);
+                      display: block; margin-bottom: 8px;">Имя пользователя</label>
+        <div style="display: flex; gap: 12px;">
+            <input type="text" name="username" value="{{ user.username }}"
+                style="flex: 1; padding: 12px 16px; border: 2px solid #e5e7eb;
+                       border-radius: 12px; font-size: 15px; outline: none; font-family: inherit;"
+                onfocus="this.style.borderColor='var(--secondary)'"
+                onblur="this.style.borderColor='#e5e7eb'">
+            <button type="submit"
+                style="padding: 12px 24px; background: var(--secondary); color: white;
+                       border: none; border-radius: 12px; font-weight: 700; cursor: pointer;">
+                Сохранить
+            </button>
+        </div>
+    </form>
+
+    <!-- Смена аватара -->
+    <form method="post" action="/profile/">
+        {% csrf_token %}
+        <input type="hidden" name="change_avatar" value="1">
+        <input type="hidden" name="avatar" id="selectedAvatar" value="{{ profile.avatar }}">
+        <label style="font-size: 13px; font-weight: 600; color: var(--text-light);
+                      display: block; margin-bottom: 8px;">Аватар</label>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+            {% for emoji in avatar_choices %}
+            <div onclick="selectAvatar(this, '{{ emoji }}')"
+                style="width: 52px; height: 52px; border-radius: 12px; display: flex;
+                       align-items: center; justify-content: center; font-size: 28px;
+                       cursor: pointer; transition: all 0.2s;
+                       border: 3px solid {% if emoji == profile.avatar %}var(--secondary){% else %}#e5e7eb{% endif %};
+                       background: {% if emoji == profile.avatar %}#ede9fe{% else %}#f9fafb{% endif %};">
+                {{ emoji }}
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit"
+            style="padding: 12px 24px; background: var(--secondary); color: white;
+                   border: none; border-radius: 12px; font-weight: 700; cursor: pointer;">
+            Сменить аватар
+        </button>
+    </form>
+</div>
+
+        <!-- STATS GRID -->
+        <div class="profile-grid">
+            <div class="profile-card">
+                <h3><span>📊</span> Статистика</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Уроков пройдено</span>
+                    <span class="stat-value">{{ profile.lessons_completed }}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Дней подряд</span>
+                    <span class="stat-value">{{ streak }}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Всего опыта</span>
+                    <span class="stat-value">{{ profile.xp }} XP</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Изучено слов</span>
+                    <span class="stat-value">{{ profile.words_learned }}</span>
+                </div>
+            </div>
+
+            <div class="profile-card">
+                <h3><span>🎯</span> Прогресс</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Текущий уровень</span>
+                    <span class="stat-value">{{ profile.level|default:"—" }}</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">До следующего уровня</span>
+                    <span class="stat-value">{{ profile.get_xp_to_next_level }} XP</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Зарегистрирован</span>
+                    <span class="stat-value" style="font-size:14px;">{{ profile.created_at|date:"d.m.Y" }}</span>
+                </div>
+            </div>
+
+            <div class="profile-card">
+                <h3><span>⏱️</span> Время обучения</h3>
+                <div class="stat-row">
+                    <span class="stat-label">Сегодня</span>
+                    <span class="stat-value">{{ today_minutes }} мин</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">На этой неделе</span>
+                    <span class="stat-value">{{ week_minutes }} мин</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Всего</span>
+                    <span class="stat-value">{{ profile.total_hours }} ч</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Среднее в день</span>
+                    <span class="stat-value">{{ profile.avg_daily_minutes }} мин</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACHIEVEMENTS -->
+        <div class="profile-card" style="margin-bottom:30px;">
+            <h3><span>🏆</span> Достижения</h3>
+            {% if achievements %}
+            <div class="achievements-grid">
+                {% for item in achievements %}
+                <div class="achievement-badge {% if not item.earned %}locked{% endif %}" title="{{ item.achievement.description }}">
+                    <div class="achievement-icon">{{ item.achievement.icon }}</div>
+                    <div class="achievement-name">{{ item.achievement.title }}</div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <p style="color:var(--text-light); text-align:center; padding:20px 0;">
+                Достижения появятся по мере обучения 🎯
+            </p>
+            {% endif %}
+        </div>
+
+        <!-- RECENT ACTIVITY -->
+        <div class="recent-activity">
+            <h3 style="margin-bottom:25px;"><span style="font-size:28px;">📅</span> Последняя активность</h3>
+
+            {% for progress in recent_lessons %}
+            <div class="activity-item">
+                <div class="activity-icon">✅</div>
+                <div class="activity-details">
+                    <h4>Завершён урок «{{ progress.lesson.title }}»</h4>
+                    <p>{{ progress.completed_at|date:"d.m.Y в H:i" }} &nbsp;·&nbsp; +{{ progress.lesson.xp_reward }} XP</p>
+                </div>
+            </div>
+            {% empty %}
+            <p style="color:var(--text-light); text-align:center; padding:20px 0;">
+                Здесь будет история вашей активности. Пройдите первый урок! 🚀
+            </p>
+            {% endfor %}
+        </div>
+
+        <!-- LOGOUT -->
+        <div style="text-align:center;">
+            <button class="logout-btn" onclick="location.href='/logout/'">Выйти из аккаунта</button>
+        </div>
+    </div>
+</div>
+
+<script>
+function selectAvatar(el, emoji) {
+    document.getElementById('selectedAvatar').value = emoji;
+    document.querySelectorAll('[onclick^="selectAvatar"]').forEach(function(e) {
+        e.style.borderColor = '#e5e7eb';
+        e.style.background = '#f9fafb';
+    });
+    el.style.borderColor = 'var(--secondary)';
+    el.style.background = '#ede9fe';
+}
+</script>
+{% endblock %}
